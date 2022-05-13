@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jobs</title>
+  <link rel="stylesheet" type="text/css" href="css/style.css" />
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+</head>
+
+<body>
+
+
+  <div class="body-section">
+    <div class="sidebar">
+
+
+      <form class="filter-form">
+
+        <div class="form-block">
+          <h4>Section</h4>
+          <ul class="form-filters list" id="section-list"></ul>
+        </div>
+
+        <div class="form-block">
+          <h4>Country</h4>
+          <ul class="form-filters list" id="country-list"></ul>
+        </div>
+
+
+        <div class="form-block">
+          <h4>City</h4>
+          <ul class="form-filters list" id="city-list"></ul>
+        </div>
+
+      </form>
+
+
+    </div>
+
+
+    <div class="main-body">
+
+      <div class="search-area">
+
+        <input type="text" id="title-filter" class="general-input search-input float-left"
+          placeholder="Search By Job Title" onkeyup="filter_jobs();" />
+        <button onclick="toggle_custom_modal('add-job-modal')" class="custom-btn blue-btn float-right filter-btn">Add
+          New Job</button>
+
+      </div>
+
+
+      <!-- job cards-->
+      <div class="cards">
+      </div>
+      <!-- end job cards-->
+      <!-- pages-->
+      <div class="pages">
+      </div>
+      <!-- end pages-->
+
+
+    </div>
+
+
+  </div>
+
+
+  <script>
+
+    /* 
+    body of add/edit job record modal
+    */
+    var modalBody = `
+      <div class="custom-grid-container">
+        <div class="custom-grid-item box1"> 
+          <input id="title" type="text" class="general-input title-input" placeholder="Job Title"/> 
+          <div class="form-err-msg" id="title-invalid"></div>
+          </div>
+        <div class="custom-grid-item box2"> 
+          <select class="general-input sector-input" id="sector">
+            <option value="0">Sector</option>
+            ${Sectors.map((ele) => (`<option value="${ele.id}">${ele.name}`)).join('')}
+            </select> 
+            <div class="form-err-msg" id="sector-invalid"></div>
+            </div>
+        <div class="custom-grid-item box3">  
+          <select class="general-input country-input"  id="country" onchange="update_city_list(this,'#modal_id#')">
+            <option value="0">Country</option>
+            ${Countries.map((ele) => (`<option value="${ele.id}">${ele.name}`)).join('')}
+            </select>    
+            <div class="form-err-msg" id="country-invalid"></div>       
+          </div>  
+        <div class="custom-grid-item box4"> 
+          <select class="general-input city-input"  id="city">
+            <option value="0">City</option>
+            </select> 
+            <div class="form-err-msg" id="city-invalid"></div>          
+          </div>
+        <div class="custom-grid-item box5">
+          <textarea id="description" class="general-input desc-input height-100"></textarea>
+          <div class="form-err-msg" id="description-invalid"></div>
+          </div>
+    </div>
+    `;
+    var modalBodyReplaced = modalBody.replace('#modal_id#', 'add-job-modal');
+    var modalBodyButtons = `    
+    <div class="modal-btns-container">
+      <button class="custom-btn blue-btn float-right modal-btn" onclick="submit_job();">Add New Job</button>
+      <button class="custom-btn gray-btn float-right modal-btn" onclick="toggle_custom_modal('add-job-modal')">Cancel</button>
+    </div>`;
+    var jobModal = generate_custom_modal('add-job-modal', { title: 'Add New Job Post', body: modalBodyReplaced + modalBodyButtons, size: 'medium' });
+
+    var modalBodyReplaced = modalBody.replace('#modal_id#', 'edit-job-modal');
+    var modalBodyButtons = `    
+    <div class="modal-btns-container">
+      <button class="custom-btn blue-btn float-right modal-btn" onclick="edit_job()">Save Job</button>
+      <button class="custom-btn gray-btn float-right modal-btn" onclick="toggle_custom_modal('edit-job-modal')">Cancel</button>
+    </div>`;
+
+    var editJobModal = generate_custom_modal('edit-job-modal', { title: 'Edit Job Post', body: modalBodyReplaced + modalBodyButtons, size: 'medium' });
+
+
+
+
+    var modalBody2 = `
+      <p style="margin-left:10px">Are you sure want to delete this job post ?</p>
+    <div class="modal-btns-container">
+      <button class="custom-btn blue-btn float-right modal-btn" onclick="delete_job()">Delete</button>
+      <button class="custom-btn gray-btn float-right modal-btn" onclick="toggle_custom_modal('delete-job-modal')">Cancel</button>
+    </div>
+    `;
+    var deleteModal = generate_custom_modal('delete-job-modal', { title: 'Delete Job', body: modalBody2, size: 'small' });
+
+
+    draw_sectors_checkboxes();
+    draw_countries_checkboxes();
+    filter_jobs();
+  </script>
+
+</body>
+
+</html>
